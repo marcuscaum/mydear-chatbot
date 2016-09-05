@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const request = require('request');
 const app = express();
 const jsonParser = bodyParser.json();
-const CinemarkCrawler = require('gollum-nocinema').CinemarkCrawler;
 const PORT = process.env.PORT || 3000;
 
 
@@ -60,25 +59,7 @@ function sendTextMessage(recipientId, messageText) {
 
 function sendMovies(recipientId) {
 
-  CinemarkCrawler
-    .getScheduleByCityAndPlace('florianopolis', 'floripa shopping')
-      .then(function(schedule) {
-          schedule.sessions.map(item => {
-            let message = `${item.title} \n ${item.hours}`;
-            let messageData = {
-              recipient: {
-                id: recipientId
-              },
-              message: {
-                text: message
-              }
-            };
-            callSendAPI(messageData);
-          })
-      })
-      .catch(function(err) {
-          console.log(err);
-      });
+
 }
 
 function callSendAPI(messageData) {
