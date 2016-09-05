@@ -8,6 +8,7 @@ const request = require('request');
 const app = express();
 const jsonParser = bodyParser.json();
 const CinemarkCrawler = require('gollum-nocinema').CinemarkCrawler;
+const PORT = process.env.PORT || 3000;
 
 
 function receivedMessage(event) {
@@ -149,4 +150,6 @@ app.post('/webhook', jsonParser, function (req, res) {
 });
 
 
-app.listen(process.env.PORT || 8080);
+app.listen(PORT, () => {
+  console.log(`Our app is running on port ${PORT}`)
+});
