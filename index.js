@@ -19,4 +19,11 @@ app.get('/hello', function(req, res) {
   res.send('world')
 })
 
+app.get('/webhook', function(req, res) {
+  if (req.query['hub.verify_token'] === 'keep_this_secret') {
+    res.send(req.query['hub.challenge']);
+  }
+  res.send('Error, wrong validation token!');
+})
+
 app.listen(process.env.PORT || 8080);
