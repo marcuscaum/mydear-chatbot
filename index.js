@@ -20,10 +20,14 @@ app.get('/hello', function(req, res) {
 })
 
 app.get('/webhook', function(req, res) {
-  if (req.query['hub.verify_token'] === 'keep_this_secret') {
-    res.send(req.query['hub.challenge']);
+  if (req.query['hub.mode'] === 'subscribe' &&
+      req.query['hub.verify_token'] === 'keep_this_secret') {
+    console.log("Validating webhook");
+    res.status(200).send(req.query['hub.challenge']);
+  } else {
+    console.error("Failed validation. Make sure the validation tokens match.");
+    res.sendStatus(403);
   }
-  res.send('Error, wrong validation token!');
-})
+});
 
 app.listen(process.env.PORT || 8080);
