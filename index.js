@@ -1,6 +1,6 @@
 'use strict';
 
-const PAGE_ACCESS_TOKEN = "EAAEQ7IqZAuXoBAM5WZBRDZAfYKSFGWHViYM2edeFeZCvnPaG3VvfFZCTEFElXZAAB4vbEIE7WUWFTR233XrfZAtwMlS7XTYHVURUZAppD8bctvw0GnObez7g36ZAyx4CkNpDm0Qyx6b68LYJfZADgclkgWKZBHIIUJOZBGJ0ViUt4lB2cAZDZD";
+const PAGE_ACCESS_TOKEN = "EAAEQ7IqZAuXoBAHdSxZBnQhnkZCWH8R8mAxQtKMcmZBZALMpqGKm5zil3G8WWMJAXbmqRIJndeMYscvBW9ZCyUxfnFYS1hNmFm2X9PAFoIWE7yp7ioplTZApgto6DaqKWkcQzhkZCFMi58LvppUtP53j3ZBbdhalTR6lH11rjoWFUngZDZD";
 const fetch = require('node-fetch');
 const express = require('express');
 
@@ -30,11 +30,15 @@ app.get('/webhook', function(req, res) {
 app.post('/webhook', function (req, res) {
   var data = req.body;
 
+  // Make sure this is a page subscription
   if (data.object == 'page') {
+    // Iterate over each entry
+    // There may be multiple if batched
     data.entry.forEach(function(pageEntry) {
       var pageID = pageEntry.id;
       var timeOfEvent = pageEntry.time;
 
+      // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
         if (messagingEvent.optin) {
           receivedAuthentication(messagingEvent);
@@ -50,6 +54,10 @@ app.post('/webhook', function (req, res) {
       });
     });
 
+    // Assume all went well.
+    //
+    // You must send back a 200, within 20 seconds, to let us know you've
+    // successfully received the callback. Otherwise, the request will time out.
     res.sendStatus(200);
   }
 });
@@ -66,11 +74,15 @@ function receivedMessage(event) {
 
   var messageId = message.mid;
 
+  // You may get a text or attachment but not both
   var messageText = message.text;
   var messageAttachments = message.attachments;
 
   if (messageText) {
 
+    // If we receive a text message, check to see if it matches any special
+    // keywords and send back the corresponding example. Otherwise, just echo
+    // the text we received.
     switch (messageText) {
       case 'image':
         sendImageMessage(senderID);
