@@ -9,8 +9,6 @@ const app = express();
 const jsonParser = bodyParser.json();
 
 
-
-
 function receivedMessage(event) {
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
@@ -77,10 +75,11 @@ function sendMovies(recipientId) {
     .then(function(response){
       return response.json().then(function(json){
         json.results.map(function(item) {
-          movies =+ item.original_title;
+          movies += `${item.original_title} </br>`;
         });
+        console.log(movies);
 
-        var messageData = {
+        let messageData = {
           recipient: {
             id: recipientId
           },
@@ -115,7 +114,6 @@ function callSendAPI(messageData) {
     }
   });
 }
-
 
 app.get('/webhook', function(req, res) {
   if (req.query['hub.mode'] === 'subscribe' &&
