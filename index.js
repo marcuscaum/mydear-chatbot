@@ -9,14 +9,6 @@ const app = express();
 const jsonParser = bodyParser.json();
 
 
-fetch('http://api.themoviedb.org/3/movie/now_playing?api_key=ea063f4f9f9c96a700b99b9737a83c80')
-  .then(function(response){
-    return response.json().then(function(json){
-      json.results.map(function(item) {
-        console.log(item.original_title)
-      });
-    });
-  });
 
 
 function receivedMessage(event) {
@@ -41,8 +33,8 @@ function receivedMessage(event) {
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
     switch (messageText) {
-      case 'image':
-        sendImageMessage(senderID);
+      case 'movies':
+        sendMovies(senderID);
         break;
 
       case 'button':
@@ -76,6 +68,30 @@ function sendTextMessage(recipientId, messageText) {
   };
 
   callSendAPI(messageData);
+}
+
+function sendMovies(recipientId) {
+  let movies;
+
+  fetch('http://api.themoviedb.org/3/movie/now_playing?api_key=ea063f4f9f9c96a700b99b9737a83c80')
+    .then(function(response){
+      return response.json().then(function(json){
+        json.results.map(function(item) {
+          movies =+ item.original_title;
+        });
+
+        var messageData = {
+          recipient: {
+            id: recipientId
+          },
+          message: {
+            text: movies
+          }
+        };
+
+        callSendAPI(messageData);
+      });
+    });
 }
 
 function callSendAPI(messageData) {
