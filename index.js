@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const request = require('request');
 const app = express();
 const jsonParser = bodyParser.json();
+const CinemarkCrawler = require('gollum-nocinema').CinemarkCrawler;
 
 
 function receivedMessage(event) {
@@ -31,20 +32,8 @@ function receivedMessage(event) {
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
     switch (messageText) {
-      case 'movies':
+      case 'filmes floripa shopping':
         sendMovies(senderID);
-        break;
-
-      case 'button':
-        sendButtonMessage(senderID);
-        break;
-
-      case 'generic':
-        sendGenericMessage(senderID);
-        break;
-
-      case 'receipt':
-        sendReceiptMessage(senderID);
         break;
 
       default:
@@ -69,28 +58,26 @@ function sendTextMessage(recipientId, messageText) {
 }
 
 function sendMovies(recipientId) {
-  let movies;
 
-  fetch('http://api.themoviedb.org/3/movie/now_playing?api_key=ea063f4f9f9c96a700b99b9737a83c80')
-    .then(function(response){
-      return response.json().then(function(json){
-        json.results.map(function(item) {
-          movies += `${item.original_title} </br>`;
-        });
-        console.log(movies);
-
-        let messageData = {
-          recipient: {
-            id: recipientId
-          },
-          message: {
-            text: movies
-          }
-        };
-
-        callSendAPI(messageData);
+  CinemarkCrawler
+    .getScheduleByCityAndPlace('florianopolis', 'floripa shopping')
+      .then(function(schedule) {
+          schedule.sessions.map(item => {
+            let message = `${item.title} \n ${item.hours}`;
+            let messageData = {
+              recipient: {
+                id: recipientId
+              },
+              message: {
+                text: message
+              }
+            };
+            callSendAPI(messageData);
+          })
+      })
+      .catch(function(err) {
+          console.log(err);
       });
-    });
 }
 
 function callSendAPI(messageData) {
