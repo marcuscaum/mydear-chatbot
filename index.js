@@ -1,6 +1,6 @@
 'use strict';
 
-const PAGE_ACCESS_TOKEN = 'EAAEQ7IqZAuXoBAM5WZBRDZAfYKSFGWHViYM2edeFeZCvnPaG3VvfFZCTEFElXZAAB4vbEIE7WUWFTR233XrfZAtwMlS7XTYHVURUZAppD8bctvw0GnObez7g36ZAyx4CkNpDm0Qyx6b68LYJfZADgclkgWKZBHIIUJOZBGJ0ViUt4lB2cAZDZD'
+const PAGE_ACCESS_TOKEN = "EAAEQ7IqZAuXoBAM5WZBRDZAfYKSFGWHViYM2edeFeZCvnPaG3VvfFZCTEFElXZAAB4vbEIE7WUWFTR233XrfZAtwMlS7XTYHVURUZAppD8bctvw0GnObez7g36ZAyx4CkNpDm0Qyx6b68LYJfZADgclkgWKZBHIIUJOZBGJ0ViUt4lB2cAZDZD";
 const fetch = require('node-fetch');
 const express = require('express');
 
@@ -15,10 +15,6 @@ fetch('http://api.themoviedb.org/3/movie/now_playing?api_key=ea063f4f9f9c96a700b
 
 
 let app = express();
-
-app.get('/hello', function(req, res) {
-  res.send('world')
-})
 
 app.get('/webhook', function(req, res) {
   if (req.query['hub.mode'] === 'subscribe' &&
@@ -70,15 +66,11 @@ function receivedMessage(event) {
 
   var messageId = message.mid;
 
-  // You may get a text or attachment but not both
   var messageText = message.text;
   var messageAttachments = message.attachments;
 
   if (messageText) {
 
-    // If we receive a text message, check to see if it matches any special
-    // keywords and send back the corresponding example. Otherwise, just echo
-    // the text we received.
     switch (messageText) {
       case 'image':
         sendImageMessage(senderID);
